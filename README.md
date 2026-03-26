@@ -30,3 +30,16 @@ java \
 
 Обязательно указать путь до ignite-server.properties.
 Параметры ignite.local.host и ignite.discovery.addresses - если не указаны при запуске, то применяются из ignite-server.properties.
+
+После поднятия кластера необходимо создать пользователя.
+
+```bash
+# Подключиться под дефолтным пользователем
+ignite / ignite
+
+# Создать пользователя
+CREATE USER app_user WITH PASSWORD 'strong_password';
+
+# (опционально) удалить дефолтного пользователя
+DROP USER ignite;
+  ```

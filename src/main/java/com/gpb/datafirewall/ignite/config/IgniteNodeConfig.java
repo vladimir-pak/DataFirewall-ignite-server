@@ -7,6 +7,7 @@ import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.communication.tcp.TcpCommunicationSpi;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
+import org.apache.ignite.ssl.SslContextFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +62,20 @@ public final class IgniteNodeConfig {
         clientCfg.setHost(localHost);
         clientCfg.setPort(10800);
         clientCfg.setPortRange(100);
+
+        boolean sslEnabled = getBoolean(props, "ignite.ssl.enabled", false);
+        System.out.println("ssl.enabled = " + sslEnabled);
+        if (sslEnabled) {
+            clientCfg.setSslEnabled(true);
+            clientCfg.setSslClientAuth(false); // см. комментарий ниже
+            clientCfg.setUseIgniteSslContextFactory(true);
+
+            cfg.setSslContextFactory(serverSslContextFactory(props));
+        }
+
         cfg.setClientConnectorConfiguration(clientCfg);
+
+        cfg.setAuthenticationEnabled(true);
 
         // Persistence
         boolean persistenceEnabled = getBoolean(props, "ignite.persistence.enabled", false);
@@ -142,5 +156,20 @@ public final class IgniteNodeConfig {
         }
 
         System.out.println("============================");
+    }
+
+    private static SslContextFactory serverSslContextFactory(Properties props) {
+        String keyStorePath = getRequired(props, "ignite.ssl.keyStorePath");
+        String keyStorePassword = getRequired(props, "ignite.ssl.keyStorePassword");
+        String trustStorePath = getRequired(props, "ignite.ssl.trustStorePath");
+        String trustStorePassword = getRequired(props, "ignite.ssl.trustStorePassword");
+
+        SslContextFactory f = new SslContextFactory();
+        f.setKeyStoreFilePath(keyStorePath);
+        f.setKeyStorePassword(keyStorePassword.toCharArray());
+        f.setTrustStoreFilePath(trustStorePath);
+        f.setTrustStorePassword(trustStorePassword.toCharArray());
+
+        return f;
     }
 }
