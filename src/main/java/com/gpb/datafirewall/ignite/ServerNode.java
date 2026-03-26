@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
+import org.apache.ignite.cluster.ClusterState;
 
 import com.gpb.datafirewall.ignite.config.IgniteNodeConfig;
 import com.gpb.datafirewall.ignite.properties.IgnitePropertiesLoader;
@@ -26,6 +27,8 @@ public class ServerNode {
         Ignite ignite = Ignition.start(
                 IgniteNodeConfig.createServerConfig(instanceName, props)
         );
+
+        ignite.cluster().state(ClusterState.ACTIVE);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() ->
                 Ignition.stop(ignite.name(), true)

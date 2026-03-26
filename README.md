@@ -83,9 +83,9 @@ java \
 
 ```bash
 # Подключиться под дефолтным пользователем
-ignite / ignite
+sqlline.sh -u jdbc:ignite:thin://127.0.0.1:10800 -n ignite -p ignite
 
-# Создать пользователя
+# Создать пользователя. Создается всегда в верхнем регистре если без кавычек
 CREATE USER app_user WITH PASSWORD 'strong_password';
 
 # (опционально) удалить дефолтного пользователя
