@@ -21,8 +21,8 @@ db/
 wal/
 binary_meta/
 marshaller/
-ignite/
-ignite-work/
+/ignite/
+/ignite-work/
 
 # Кейсы, когда IDEA создаёт временные файлы в проекте
 *.class
