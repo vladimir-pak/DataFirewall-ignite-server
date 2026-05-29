@@ -15,7 +15,7 @@ spring:
   application:
     name: ignite-server
     version: ${APP_VERSION:0.0.1}
-    projectName: datafirewall
+    project-name: datafirewall
 
 ignite:
   instance-name: ignite-server-a
