@@ -1,0 +1,122 @@
+server:
+  port: 9200
+#   ssl:
+#     key-store: file:/app/cert/certificate.pfx
+#     key-store-password: ${KEYSTORE_PASSWORD}
+#     key-store-type: PKCS12
+#     enabled-protocols: TLSv1.3,TLSv1.2
+#     ciphers: >-
+#       TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+#       TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,
+#       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
+#       TLS_DHE_RSA_WITH_AES_256_CBC_SHA256
+
+spring:
+  application:
+    name: ignite-server
+    version: ${APP_VERSION:0.0.1}
+    projectName: datafirewall
+
+ignite:
+  instance-name: ignite-server-a
+  consistent-id: ignite-server-a
+  local-host: 127.0.0.1
+
+  cluster:
+    activate-on-start: true
+
+  discovery:
+    addresses:
+      - 127.0.0.1:47500..47520
+    local-port: 47500
+    local-port-range: 20
+
+  communication:
+    local-port: 47100
+    local-port-range: 20
+
+  thin-client:
+    host: 127.0.0.1
+    port: 10800
+    port-range: 100
+
+  ssl:
+    enabled: false
+    client-auth: false
+    key-store-path:
+    key-store-password:
+    trust-store-path:
+    trust-store-password:
+
+  authentication:
+    enabled: true
+
+  persistence:
+    enabled: true
+    storage-path: ./ignite/data/storage
+    wal-path: ./ignite/data/wal
+    wal-archive-path: ./ignite/data/wal-archive
+
+  data-region:
+    name: Default_Region
+    initial-size-mb: 256
+    max-size-mb: 512
+
+# Для второго узла:
+# ignite:
+#   instance-name: ignite-server-b
+#   consistent-id: ignite-server-b
+#   local-host: 10.10.1.12
+
+#   discovery:
+#     addresses:
+#       - 10.10.1.11:47500..47520
+#       - 10.10.1.12:47500..47520
+
+logs-database:
+  enabled: true
+  task-create-partition: 0 0 0 * * ?
+  url: jdbc:postgresql://localhost:5432/db_log
+  username: postgres
+  password: postgres
+  driverClassName: org.postgresql.Driver
+  table: "audit.jdata_postgres_log"
+
+clean-database-logs:
+  # cron expression, to switch off put value '-'
+  task-cleaner-schedule: 0 0 1 * * ?
+  # delete logs from db that older than X days
+  clean-period: 1080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+
+logging:
+  cef:
+    path: logs
+    fileName: cef.log
+    retention-days: 90
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl: DEBUG
+    org.apache.flink: INFO
+    org.springframework.jdbc: WARN
+    com.gpb.replication.postgres: DEBUG
+  file:
+    name: logs/jdata.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    console: "%d{HH:mm:ss} %-5level %logger{36} - %msg%n"
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 7
