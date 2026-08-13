@@ -68,6 +68,12 @@ public class IgniteServerConfig {
             cfg.setDataStorageConfiguration(dataStorageConfiguration());
         }
 
+        if (props.getAuthentication().isEnabled() && !props.getPersistence().isEnabled()) {
+            throw new IllegalStateException(
+                    "ignite.authentication.enabled=true requires ignite.persistence.enabled=true"
+            );
+        }
+
         logStartup();
 
         return cfg;
@@ -146,10 +152,31 @@ public class IgniteServerConfig {
         IgniteServerProperties.Ssl ssl = props.getSsl();
 
         SslContextFactory factory = new SslContextFactory();
+
         factory.setKeyStoreFilePath(ssl.getKeyStorePath());
         factory.setKeyStorePassword(ssl.getKeyStorePassword().toCharArray());
         factory.setTrustStoreFilePath(ssl.getTrustStorePath());
         factory.setTrustStorePassword(ssl.getTrustStorePassword().toCharArray());
+
+        if (ssl.getKeyStoreType() != null && !ssl.getKeyStoreType().isBlank()) {
+            factory.setKeyStoreType(ssl.getKeyStoreType());
+        }
+
+        if (ssl.getTrustStoreType() != null && !ssl.getTrustStoreType().isBlank()) {
+            factory.setTrustStoreType(ssl.getTrustStoreType());
+        }
+
+        if (ssl.getProtocol() != null && !ssl.getProtocol().isBlank()) {
+            factory.setProtocol(ssl.getProtocol());
+        }
+
+        if (ssl.getProtocols() != null && !ssl.getProtocols().isEmpty()) {
+            factory.setProtocols(ssl.getProtocols().toArray(new String[0]));
+        }
+
+        if (ssl.getCipherSuites() != null && !ssl.getCipherSuites().isEmpty()) {
+            factory.setCipherSuites(ssl.getCipherSuites().toArray(new String[0]));
+        }
 
         return factory;
     }

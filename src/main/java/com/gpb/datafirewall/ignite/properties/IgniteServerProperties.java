@@ -205,10 +205,30 @@ public class IgniteServerProperties {
     public static class Ssl {
         private boolean enabled = false;
         private boolean clientAuth = false;
+
         private String keyStorePath;
         private String keyStorePassword;
+        private String keyStoreType = "JKS";
+
         private String trustStorePath;
         private String trustStorePassword;
+        private String trustStoreType = "JKS";
+
+        /**
+         * Protocol for SSLContext creation.
+         * Обычно лучше оставить "TLS", а конкретные версии ограничивать через protocols.
+         */
+        private String protocol = "TLS";
+
+        /**
+         * Разрешенные TLS versions.
+         */
+        private List<String> protocols = new ArrayList<>();
+
+        /**
+         * Разрешенные cipher suites.
+         */
+        private List<String> cipherSuites = new ArrayList<>();
 
         public boolean isEnabled() {
             return enabled;
@@ -242,6 +262,14 @@ public class IgniteServerProperties {
             this.keyStorePassword = keyStorePassword;
         }
 
+        public String getKeyStoreType() {
+            return keyStoreType;
+        }
+
+        public void setKeyStoreType(String keyStoreType) {
+            this.keyStoreType = keyStoreType;
+        }
+
         public String getTrustStorePath() {
             return trustStorePath;
         }
@@ -256,6 +284,38 @@ public class IgniteServerProperties {
 
         public void setTrustStorePassword(String trustStorePassword) {
             this.trustStorePassword = trustStorePassword;
+        }
+
+        public String getTrustStoreType() {
+            return trustStoreType;
+        }
+
+        public void setTrustStoreType(String trustStoreType) {
+            this.trustStoreType = trustStoreType;
+        }
+
+        public String getProtocol() {
+            return protocol;
+        }
+
+        public void setProtocol(String protocol) {
+            this.protocol = protocol;
+        }
+
+        public List<String> getProtocols() {
+            return protocols;
+        }
+
+        public void setProtocols(List<String> protocols) {
+            this.protocols = protocols;
+        }
+
+        public List<String> getCipherSuites() {
+            return cipherSuites;
+        }
+
+        public void setCipherSuites(List<String> cipherSuites) {
+            this.cipherSuites = cipherSuites;
         }
     }
 
