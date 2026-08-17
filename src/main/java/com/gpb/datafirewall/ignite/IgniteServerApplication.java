@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.gpb.datafirewall.ignite.cef.SvoiLogger;
 import com.gpb.datafirewall.ignite.cef.enums.SvoiSeverityEnum;
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @SpringBootApplication
 @ConfigurationPropertiesScan
+@EnableScheduling
 public class IgniteServerApplication {
 
     private final SvoiLogger svoiCustomLogger;
